@@ -28,8 +28,11 @@ async function startServer() {
   // Attach auth user context to request if token present
   app.use(authenticate as express.RequestHandler);
 
-  // Serve static assets from src/assets if needed
-  app.use('/src/assets', express.static(path.join(__dirname, 'src', 'assets')));
+  // Serve static assets from src/assets
+  const assetsPath = fs.existsSync(path.resolve(process.cwd(), 'src', 'assets'))
+    ? path.resolve(process.cwd(), 'src', 'assets')
+    : path.resolve(__dirname, 'src', 'assets');
+  app.use('/src/assets', express.static(assetsPath));
 
   // API Route registrations
   app.use('/api/auth', authRoutes);
@@ -52,12 +55,15 @@ async function startServer() {
     });
     app.use(vite.middlewares);
   } else {
-    // In production: serve built dist folder
-    const distPath = path.resolve(__dirname, 'dist');
-    if (fs.existsSync(distPath)) {
-      app.use(express.static(distPath));
+    // In production: serve built client assets
+    const clientPath = fs.existsSync(path.resolve(process.cwd(), 'dist', 'index.html'))
+      ? path.resolve(process.cwd(), 'dist')
+      : path.resolve(__dirname);
+
+    if (fs.existsSync(clientPath)) {
+      app.use(express.static(clientPath));
       app.get('*', (_req, res) => {
-        res.sendFile(path.resolve(distPath, 'index.html'));
+        res.sendFile(path.resolve(clientPath, 'index.html'));
       });
     } else {
       console.warn('Production build dist folder not found. Run npm run build.');
