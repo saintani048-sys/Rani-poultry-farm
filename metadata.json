@@ -1,0 +1,6 @@
+{
+  "name": "Noorani Poultry Farm",
+  "description": "Professional poultry farming management platform with hen purchases, egg collection, egg sales, live transaction ledger, and administrative dashboard.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
